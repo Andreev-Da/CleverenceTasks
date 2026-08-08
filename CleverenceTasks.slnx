@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/SolutionItems/">
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="Source/CleverenceTasks.Task1.Tests/CleverenceTasks.Task1.Tests.csproj" />
+  <Project Path="Source/CleverenceTasks.Task1/CleverenceTasks.Task1.csproj" />
+  <Project Path="Source/CleverenceTasks.Task2.Tests/CleverenceTasks.Task2.Tests.csproj" />
+  <Project Path="Source/CleverenceTasks.Task2/CleverenceTasks.Task2.csproj" />
+  <Project Path="Source/CleverenceTasks.Task3.Tests/CleverenceTasks.Task3.Tests.csproj" />
+  <Project Path="Source/CleverenceTasks.Task3/CleverenceTasks.Task3.csproj" />
+</Solution>
