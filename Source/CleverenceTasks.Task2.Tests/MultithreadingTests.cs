@@ -1,77 +1,53 @@
+using TUnit.Core.Logging;
+using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
+
 namespace CleverenceTasks.Task2.Tests;
 
-public class DataDrivenTests
+public class MultithreadingTests
 {
-    [Test]
-    [Arguments(1, 2, 3)]
-    [Arguments(5, -3, 2)]
-    [Arguments(0, 0, 0)]
-    public async Task Add_WithArguments(int a, int b, int expected)
+    private const int Increment = 1;
+    
+    private readonly IServer _server;
+    private readonly ClientFactory _clientsFactory;
+    
+    public MultithreadingTests()
     {
-        var calculator = new Calculator();
-
-        var result = calculator.Add(a, b);
-
-        await Assert.That(result).IsEqualTo(expected);
+        _server = new SimpleServer();
+        _clientsFactory = new ClientFactory(_server, new MockLoggerFactory(), Increment);
     }
-
+    
     [Test]
-    [MethodDataSource(nameof(SubtractCases))]
-    public async Task Subtract_WithMethodDataSource(int a, int b, int expected)
+    [Arguments(0, 8)]
+    [Arguments(0, 32)]
+    [Arguments(0, 64)]
+    [Arguments(0, 128)]
+    public async Task RaceTest(int readersCount, int writersCount)
     {
-        var calculator = new Calculator();
+        IReadOnlyCollection<IClient> clients = _clientsFactory.CreateMany(readersCount, writersCount);
+        List<Thread> threads = new List<Thread>(clients.Count);
+        SemaphoreSlim launcher = new SemaphoreSlim(0, clients.Count);
+        
+        // Не использовал Parallel, т.к. он вроде бы работает с ThreadPool, а хочется честную конкуренцию
+        foreach (IClient client in clients)
+        {
+            var thread = new Thread(() =>
+            {
+                launcher.Wait();
+                Thread.Sleep(1);
+                client.DoWork();
+            });
+            
+            thread.Start();
+            threads.Add(thread);
+        }
+        
+        launcher.Release(clients.Count);
 
-        var result = calculator.Subtract(a, b);
-
-        await Assert.That(result).IsEqualTo(expected);
-    }
-
-    [Test]
-    [AdditionDataGenerator]
-    public async Task Add_WithCustomDataGenerator(int a, int b, int expected)
-    {
-        var calculator = new Calculator();
-
-        var result = calculator.Add(a, b);
-
-        await Assert.That(result).IsEqualTo(expected);
-    }
-
-    [Test]
-    [MatrixDataSource]
-    public async Task Multiply_AllCombinations(
-        [Matrix(1, 2, 3)] int a,
-        [Matrix(0, 1, -1)] int b)
-    {
-        var calculator = new Calculator();
-
-        var result = calculator.Multiply(a, b);
-
-        await Assert.That(result).IsEqualTo(a * b);
-    }
-
-    public static IEnumerable<(int, int, int)> SubtractCases()
-    {
-        yield return (5, 3, 2);
-        yield return (10, 7, 3);
-        yield return (0, 0, 0);
-    }
-}
-
-// Arguments can also be applied at the class level to parameterize the constructor
-[Arguments(10)]
-[Arguments(100)]
-public class ClassLevelArgumentTests(int divisor)
-{
-    [Test]
-    [Arguments(100)]
-    [Arguments(50)]
-    public async Task Divide_WithClassAndMethodArguments(int dividend)
-    {
-        var calculator = new Calculator();
-
-        var result = calculator.Divide(dividend, divisor);
-
-        await Assert.That(result).IsGreaterThan(0);
+        foreach (Thread thread in threads)
+        {
+            thread.Join();
+        }
+        
+        await Assert.That(_server.GetCount()).IsEqualTo(writersCount * Increment);
     }
 }

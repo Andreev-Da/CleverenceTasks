@@ -6,11 +6,11 @@ using Microsoft.Extensions.Logging;
 
 namespace CleverenceTasks.Task2;
 
-public class ClientFactory(IServer server, ILoggerFactory logger, int count = 1)
+public class ClientFactory(IServer server, ILoggerFactory logger, int increment = 1)
 {
     public IClient CreateNew(bool isWriter = false)
     {
-        return isWriter ? new Writer(server, logger.CreateLogger<Writer>(), count) 
+        return isWriter ? new Writer(server, logger.CreateLogger<Writer>(), increment) 
                 : new Reader(server, logger.CreateLogger<Reader>());
     }   
 

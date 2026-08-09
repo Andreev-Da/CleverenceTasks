@@ -9,6 +9,11 @@
 
   <ItemGroup>
     <PackageReference Include="TUnit" Version="1.6*" />
+    <PackageReference Include="TUnit.Mocks.Logging" Version="1.64.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CleverenceTasks.Task2\CleverenceTasks.Task2.csproj" />
   </ItemGroup>
 
 </Project>
