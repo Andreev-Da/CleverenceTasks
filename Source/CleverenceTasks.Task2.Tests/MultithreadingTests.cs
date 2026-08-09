@@ -21,7 +21,7 @@ public class MultithreadingTests
     [Arguments(0, 32)]
     [Arguments(0, 64)]
     [Arguments(0, 128)]
-    public async Task RaceTest(int readersCount, int writersCount)
+    public async Task RaceConditionTest(int readersCount, int writersCount)
     {
         IReadOnlyCollection<IClient> clients = _clientsFactory.CreateMany(readersCount, writersCount);
         List<Thread> threads = new List<Thread>(clients.Count);
