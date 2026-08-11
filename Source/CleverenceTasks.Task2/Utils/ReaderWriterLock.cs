@@ -22,6 +22,7 @@ namespace CleverenceTasks.Task2.Utils
         {
             if (Interlocked.Add(ref _writersReaders, 1) >= WriterBit)
             {
+                // Тут мне не понравилось сравнение, на мой взгляд условие с занулением никогда не будет выполнено, тогда зачем оно нужно?
                 while (_writersReaders >= WriterBit)
                 {
                     Thread.Yield();
@@ -46,6 +47,7 @@ namespace CleverenceTasks.Task2.Utils
         {
             Interlocked.Add(ref _writersReaders, -WriterBit);
         }
+
         public Defer ReadScope()
         {
             ReadLock();
