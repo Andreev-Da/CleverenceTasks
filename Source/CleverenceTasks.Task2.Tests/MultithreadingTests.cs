@@ -1,3 +1,5 @@
+﻿using CleverenceTasks.Task2.Servers;
+using Microsoft.Extensions.Logging;
 using TUnit.Core.Logging;
 using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 
@@ -12,8 +14,9 @@ public class MultithreadingTests
     
     public MultithreadingTests()
     {
-        _server = new SimpleServer();
-        _clientsFactory = new ClientFactory(_server, new MockLoggerFactory(), Increment);
+        var loggerFactory = new MockLoggerFactory();
+        _server = new ReaderWriterServer(loggerFactory.CreateLogger<ReaderWriterServer>());
+        _clientsFactory = new ClientFactory(_server, loggerFactory, Increment);
     }
     
     [Test]
@@ -33,7 +36,7 @@ public class MultithreadingTests
             var thread = new Thread(() =>
             {
                 launcher.Wait();
-                Thread.Sleep(1);
+                Thread.Sleep(TimeSpan.FromSeconds(0.1));
                 client.DoWork();
             });
             
