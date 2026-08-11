@@ -1,8 +1,10 @@
-﻿namespace CleverenceTasks.Task2;
+﻿using Microsoft.Extensions.Logging;
 
-public class SimpleServer : IServer
+namespace CleverenceTasks.Task2;
+
+public class SimpleServer(ILogger<SimpleServer> logger) : IServer
 {
-    private int _count;
+    private volatile int _count;
     
     public int GetCount()
     {
@@ -11,6 +13,10 @@ public class SimpleServer : IServer
 
     public void AddToCount(int value)
     {
-        _count += value;
+        int count = _count;
+        int newValue = value;
+        _count = newValue;
+
+        logger.LogDebug("Count changed {0} -> {1}", count, newValue);
     }
 }
