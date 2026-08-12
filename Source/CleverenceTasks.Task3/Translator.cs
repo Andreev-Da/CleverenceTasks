@@ -32,5 +32,17 @@ namespace CleverenceTasks.Task3
                 await writeTask;
             }
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // Я параноик, не хочу освобождать стримы
+                _reader?.Dispose();
+                _writer?.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }

@@ -19,7 +19,7 @@ public class StreamLogReader : Disposable, ILogReader
         _parser = parser;
     }
 
-    public async Task<Log?> ReadNextAsync(CancellationToken cancellation)
+    public async Task<Log?> ReadNextAsync(CancellationToken cancellation = default)
     {
         string? line = await _input.ReadLineAsync(cancellation);
 

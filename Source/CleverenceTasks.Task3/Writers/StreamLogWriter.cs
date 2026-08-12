@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CleverenceTasks.Task3.Writers
 {
-    internal class StreamLogWriter : Disposable, ILogWriter
+    public class StreamLogWriter : Disposable, ILogWriter
     {
         private Func<Log, string> _formatter;
         private StreamWriter _output;
@@ -24,7 +24,7 @@ namespace CleverenceTasks.Task3.Writers
         }
 
 
-        public async Task WriteAsync(Log log, CancellationToken cancellation)
+        public async Task WriteAsync(Log log, CancellationToken cancellation = default)
         {
             string formattedLog = _formatter(log);
             await _output.WriteLineAsync(formattedLog);
