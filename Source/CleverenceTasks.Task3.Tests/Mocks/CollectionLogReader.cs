@@ -18,5 +18,9 @@ namespace CleverenceTasks.Task3.Tests.Mocks
             await Task.Yield();
             return logs.ElementAt(_lastIndex);
         }
+        
+        public void Dispose()
+        {
+        }
     }
 }

@@ -13,5 +13,9 @@ namespace CleverenceTasks.Task3.Tests.Mocks
 
             output.Add(log);
         }
+
+        public void Dispose()
+        {
+        }
     }
 }
