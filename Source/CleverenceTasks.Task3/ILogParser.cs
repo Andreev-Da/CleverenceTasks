@@ -4,8 +4,8 @@ using System.Text;
 
 namespace CleverenceTasks.Task3
 {
-    public interface ILogWriter : IDisposable
+    public interface ILogParser
     {
-        Task WriteAsync(Log log, CancellationToken cancellation);
+        Log Parse(ReadOnlySpan<char> line);
     }
 }

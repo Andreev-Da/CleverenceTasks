@@ -4,18 +4,30 @@ using System.Text;
 
 namespace CleverenceTasks.Task3
 {
-    public class Translator(ILogReader reader, ILogWriter writer)
+    public class Translator : Disposable
     {
+        private readonly ILogReader _reader;
+        private readonly ILogWriter _writer;
+
+        public Translator(ILogReader reader, ILogWriter writer)
+        {
+            ArgumentNullException.ThrowIfNull(reader);
+            ArgumentNullException.ThrowIfNull(writer);
+
+            _reader = reader;
+            _writer = writer;
+        }
+
         public async Task TranslateAsync(CancellationToken cancellation = default)
         {
-            Log? log = await reader.ReadNextAsync(cancellation);
+            Log? log = await _reader.ReadNextAsync(cancellation);
 
             while (log != null)
             {
                 cancellation.ThrowIfCancellationRequested();
 
-                Task writeTask = writer.WriteAsync(log, cancellation);
-                log = await reader.ReadNextAsync(cancellation);
+                Task writeTask = _writer.WriteAsync(log, cancellation);
+                log = await _reader.ReadNextAsync(cancellation);
 
                 await writeTask;
             }

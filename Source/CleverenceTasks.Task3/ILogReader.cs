@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CleverenceTasks.Task3
 {
-    public interface ILogReader
+    public interface ILogReader : IDisposable
     {
         /// <summary>
         /// Read next log if it exists
