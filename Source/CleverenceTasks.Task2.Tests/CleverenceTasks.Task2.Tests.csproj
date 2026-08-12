@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.11" />
     <PackageReference Include="TUnit" Version="1.6*" />
     <PackageReference Include="TUnit.Mocks.Logging" Version="1.64.6" />
   </ItemGroup>
