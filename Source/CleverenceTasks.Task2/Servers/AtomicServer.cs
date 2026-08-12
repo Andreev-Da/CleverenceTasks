@@ -9,23 +9,26 @@ namespace CleverenceTasks.Task2.Servers
     public class AtomicServer(ILogger<AtomicServer> logger) : IServer
     {
         private int _count;
-        private Utils.ReaderWriterLock _lock = new ();
-
+        
         public int GetCount()
         {
-            using var scope = _lock.ReadScope();
             return _count;
         }
 
         public void AddToCount(int value)
         {
-            using var scope = _lock.WriteScope();
+            int attempts = 0;
+            int count, newValue;
 
-            int count = _count;
-            int newValue = count + value;
-            _count = newValue;
+            // Можно просто использовать Interlocked.Add, но я хочу залогировать изменение значения
+            do
+            {
+                attempts++;
+                count = _count;
+                newValue = _count + value;
+            } while (Interlocked.CompareExchange(ref _count, newValue, count) != count);
 
-            logger.LogDebug("Count changed {0} -> {1}", count, newValue);
+            logger.LogDebug("Count changed {0} -> {1} ({2})", count, newValue, attempts);
         }
     }
 }

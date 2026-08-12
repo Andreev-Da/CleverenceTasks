@@ -4,7 +4,7 @@ namespace CleverenceTasks.Task2.Servers;
 
 public class SimpleServer(ILogger<SimpleServer> logger) : IServer
 {
-    private volatile int _count;
+    private int _count;
     
     public int GetCount()
     {

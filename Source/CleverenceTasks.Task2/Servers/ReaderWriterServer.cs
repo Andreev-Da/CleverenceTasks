@@ -1,13 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CleverenceTasks.Task2.Servers
 {
     public class ReaderWriterServer(ILogger<ReaderWriterServer> logger) : IServer
     {
-        private ReaderWriterLock _lock;
+        private Utils.ReaderWriterLock _lock = new();
         private int _count;
 
         public int GetCount()
@@ -17,18 +14,13 @@ namespace CleverenceTasks.Task2.Servers
 
         public void AddToCount(int value)
         {
-            int attempts = 0;
-            int count, newValue;
+            using var scope = _lock.WriteScope();
 
-            // Можно просто использовать Interlocked.Add, но я хочу залогировать изменение значения
-            do
-            {
-                attempts++;
-                count = _count;
-                newValue = _count + value;
-            } while (Interlocked.CompareExchange(ref _count, newValue, count) != count);
+            int count = _count;
+            int newValue = count + value;
+            _count = newValue;
 
-            logger.LogDebug("Count changed {0} -> {1} ({2})", count, newValue, attempts);
+            logger.LogDebug("Count changed {0} -> {1}", count, newValue);
         }
     }
 }
