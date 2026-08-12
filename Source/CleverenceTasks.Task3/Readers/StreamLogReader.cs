@@ -2,7 +2,7 @@
 
 public class StreamLogReader : Disposable, ILogReader
 {
-    private StreamReader _input;
+    private TextReader _input;
     private ILogParser _parser;
 
     public StreamLogReader(Stream stream, ILogParser parser)
@@ -10,7 +10,7 @@ public class StreamLogReader : Disposable, ILogReader
     {
     }
 
-    public StreamLogReader(StreamReader input, ILogParser parser)
+    public StreamLogReader(TextReader input, ILogParser parser)
     {
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(parser);

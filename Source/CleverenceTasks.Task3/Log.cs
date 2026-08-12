@@ -7,7 +7,7 @@ namespace CleverenceTasks.Task3
     public record class Log(
         DateTimeOffset DateTime,
         LogLevel LogLevel,
-        string CallerMemberName,
+        string? CallerMemberName,
         string Message
     );
 }

@@ -35,21 +35,19 @@ namespace CleverenceTasks.Task3.Tests
             }
         }
 
-        //Дата: 10.03.2025
-        //Время: 15:14:49.523
-        //УровеньЛогирования: INFORMATION
-        //Сообщение: Версия программы: ‘3.4.0.48729’
         private static string SimpleFormatter(Log log)
         {
+            //Дата: 10.03.2025
+            //Время: 15:14:49.523
+            //УровеньЛогирования: INFORMATION
+            //Сообщение: Версия программы: ‘3.4.0.48729’
             var builder = new StringBuilder();
 
-            builder.AppendFormat("Дата: {0:dd.MM.yyyy}\n", log.DateTime);
-
-            builder.AppendFormat("Время: {0:H:mm:ss.FFF}\n", log.DateTime);
-
-            builder.AppendFormat("УровеньЛогирования: {0}\n", GetLogLevelString(log.LogLevel));
-
-            builder.AppendFormat("Сообщение: {0}", log.Message);
+            builder.AppendFormat("{0:dd.MM.yyyy}\t", log.DateTime);
+            builder.AppendFormat("{0:H:mm:ss.FFF}\t", log.DateTime);
+            builder.AppendFormat("{0}\t", GetLogLevelString(log.LogLevel));
+            builder.AppendFormat("{0}\t", log.CallerMemberName ?? "DEFAULT");
+            builder.AppendFormat("{0}", log.Message);
 
             return builder.ToString();
         }
