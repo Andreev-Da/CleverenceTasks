@@ -1,5 +1,6 @@
 ﻿using CleverenceTasks.Task2.Servers;
 using Microsoft.Extensions.Logging;
+using TUnit.Core.Executors;
 using TUnit.Core.Logging;
 using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 
@@ -9,24 +10,17 @@ public class MultithreadingTests
 {
     private const int Increment = 1;
     
-    private readonly IServer _server;
-    private readonly ClientFactory _clientsFactory;
-    
-    public MultithreadingTests()
-    {
-        var loggerFactory = new MockLoggerFactory();
-        _server = new ReaderWriterServer(loggerFactory.CreateLogger<ReaderWriterServer>());
-        _clientsFactory = new ClientFactory(_server, loggerFactory, Increment);
-    }
     
     [Test]
-    [Arguments(0, 8)]
-    [Arguments(0, 32)]
-    [Arguments(0, 64)]
-    [Arguments(0, 128)]
-    public async Task RaceConditionTest(int readersCount, int writersCount)
-    {
-        IReadOnlyCollection<IClient> clients = _clientsFactory.CreateMany(readersCount, writersCount);
+    [CombinedDataSources]
+    [NotInParallel]
+    public async Task RaceConditionTest(
+        [ServersDataSource] IServer server,
+        [Arguments(8, 16, 32, 64, 128)] int writersCount
+    ){
+        IReadOnlyCollection<IClient> clients = new ClientFactory(server, new MockLoggerFactory(), Increment)
+            .CreateMany(readersCount: 0, writersCount);
+
         List<Thread> threads = new List<Thread>(clients.Count);
         SemaphoreSlim launcher = new SemaphoreSlim(0, clients.Count);
         
@@ -51,6 +45,6 @@ public class MultithreadingTests
             thread.Join();
         }
         
-        await Assert.That(_server.GetCount()).IsEqualTo(writersCount * Increment);
+        await Assert.That(server.GetCount()).IsEqualTo(writersCount * Increment);
     }
 }
