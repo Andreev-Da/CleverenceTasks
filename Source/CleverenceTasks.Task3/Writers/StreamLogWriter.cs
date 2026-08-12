@@ -16,8 +16,8 @@ namespace CleverenceTasks.Task3.Writers
 
         public StreamLogWriter(StreamWriter output, Func<Log, string> formatter)
         {
+            ArgumentNullException.ThrowIfNull(output);
             ArgumentNullException.ThrowIfNull(formatter);
-            ArgumentNullException.ThrowIfNull(_formatter);
 
             _formatter = formatter;
             _output = output;
