@@ -2,7 +2,7 @@
 
 public class Fotmat2LogReader : ILogReader
 {
-    public Task<LogData?> ReadNextAsync(CancellationToken cancellation)
+    public Task<Log?> ReadNextAsync(CancellationToken cancellation)
     {
         throw new NotImplementedException();
     }

@@ -4,11 +4,11 @@ using System.Text;
 
 namespace CleverenceTasks.Task3
 {
-    internal class Translator(ILogReader reader, ILogWriter writer)
+    public class Translator(ILogReader reader, ILogWriter writer)
     {
-        public async Task TranslateAsync(CancellationToken cancellation)
+        public async Task TranslateAsync(CancellationToken cancellation = default)
         {
-            LogData? log = await reader.ReadNextAsync(cancellation);
+            Log? log = await reader.ReadNextAsync(cancellation);
 
             while (log != null)
             {

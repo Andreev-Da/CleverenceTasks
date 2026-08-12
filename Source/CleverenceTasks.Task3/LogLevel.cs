@@ -4,8 +4,11 @@ using System.Text;
 
 namespace CleverenceTasks.Task3
 {
-    public interface ILogWriter
+    public enum LogLevel
     {
-        Task WriteAsync(Log log, CancellationToken cancellation);
+        Debug = 0,
+        Information = 1,
+        Warning = 2,
+        Error = 3
     }
 }

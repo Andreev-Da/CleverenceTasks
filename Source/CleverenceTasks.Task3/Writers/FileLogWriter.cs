@@ -6,15 +6,15 @@ namespace CleverenceTasks.Task3.Writers
 {
     internal class FileLogWriter : ILogWriter
     {
-        private Func<LogData, string> _formatter;
+        private Func<Log, string> _formatter;
 
-        public FileLogWriter(StreamWriter stream, Func<LogData, string> formatter)
+        public FileLogWriter(StreamWriter stream, Func<Log, string> formatter)
         {
             ArgumentNullException.ThrowIfNull(formatter);
             _formatter = formatter;
         }
 
-        public Task WriteAsync(LogData log, CancellationToken cancellation)
+        public Task WriteAsync(Log log, CancellationToken cancellation)
         {
             throw new NotImplementedException();
         }

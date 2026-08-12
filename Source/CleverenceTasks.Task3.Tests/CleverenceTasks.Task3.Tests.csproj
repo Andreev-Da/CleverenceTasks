@@ -11,4 +11,8 @@
     <PackageReference Include="TUnit" Version="1.6*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CleverenceTasks.Task3\CleverenceTasks.Task3.csproj" />
+  </ItemGroup>
+
 </Project>
