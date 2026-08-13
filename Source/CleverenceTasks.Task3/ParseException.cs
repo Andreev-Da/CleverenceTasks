@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CleverenceTasks.Task3
 {
-    internal class ParsingException(
+    public class ParseException(
         string? message = null, 
         Exception? innerException = null
     ) : Exception(message, innerException)

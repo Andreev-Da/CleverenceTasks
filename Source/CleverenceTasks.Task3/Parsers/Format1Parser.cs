@@ -1,7 +1,9 @@
 ﻿using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CleverenceTasks.Task3.Parsers
 {
@@ -15,7 +17,7 @@ namespace CleverenceTasks.Task3.Parsers
             int index = 0;
             // ЗНАЮ что надо это в кастомный StringReader или токенизатор строки обернуть, но времени нет, тут увы.
             // Я считаю что логи в целом довольно хорошо структурированы, так что реализация должна быть удовлетворительная.
-            // TODO перепишу если время будет
+
             var dateTime = ReadDateTime(line, ref index);
             var logLevel = ReadLogLevel(line, ref index);
             var message = ReadMessage(line, ref index);
@@ -43,7 +45,7 @@ namespace CleverenceTasks.Task3.Parsers
             while (index < line.Length && !Char.IsWhiteSpace(line[index]))
                 index++;
 
-            var levelString = line.Slice(start, index - start).ToString();
+            var levelString = line.Slice(start, index - start);
 
             return levelString switch
             {
@@ -51,7 +53,7 @@ namespace CleverenceTasks.Task3.Parsers
                 "DEBUG" => LogLevel.Debug,
                 "ERROR" => LogLevel.Error,
                 "WARNING" => LogLevel.Warning,
-                _ => throw new ParsingException($"Invalid token {levelString}")
+                _ => throw new ParseException($"Invalid token {levelString}")
             };
         }
 
@@ -62,8 +64,18 @@ namespace CleverenceTasks.Task3.Parsers
             while (index < line.Length && !Char.IsLetter(line[index]))
                 index++;
 
-            var dateTimeString = line.Slice(start, index - start - 1).ToString();
-            return new DateTimeOffset();
+            var dateTimeString = line.Slice(start, index - start - 1);
+            var isSuccess = DateTimeOffset.TryParseExact(
+                dateTimeString,
+                "dd.MM.yyyy HH:mm:ss.fff",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AdjustToUniversal, 
+                out var result);
+        
+            if (!isSuccess)
+                throw new ParseException($"Expected datetime {dateTimeString}");
+
+            return result;
         }
     }
 }
