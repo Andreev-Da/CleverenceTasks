@@ -16,6 +16,5 @@ public class MockLoggerFactory : ILoggerFactory
 
     public void Dispose()
     {
-        // TODO release managed resources here
     }
 }
